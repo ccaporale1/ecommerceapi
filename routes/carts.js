@@ -15,3 +15,16 @@ cartsRouter.get('/:customerId', (req, res, next) => {
         }
     });
 });
+
+cartsRouter.post('/:customerId', (req,res,next) => {
+    const customer_id = req.params.customerId;
+    const product_id = req.params.productId;
+    const quantity = req.params.quantity;
+    db.query('INSERT INTO cart (customer_id,product_id,product_quantity,total_cost) VALUES ($1,$2,$3,$3*(select product_cost from products where id = $2))', [customer_id,product_id,quantity], (err,result) => {
+        if(err) {
+            return next(err); //in the case of an error, invoke the error-handling middleware
+        } else {
+            res.status(200).send(); //otherwise, create the cart 
+        }
+    });
+});
