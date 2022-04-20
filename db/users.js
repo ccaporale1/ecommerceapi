@@ -1,5 +1,5 @@
 import { response } from 'express';
-import db from './db.js';
+const db = require('../db/index.js');
 
 export const getAllUsers = async () => {
     return await db.query(
