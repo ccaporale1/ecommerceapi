@@ -1,15 +1,15 @@
-import { response } from 'express';
-const db = require('../db/index.js');
+const { response } = require('express');
+const db = require('./index.js');
 
 //GET ALL PRODUCTS INFO
-export const getAllProducts = async () => {
+exports.getAllProducts = async () => {
     return await db.query(
         'SELECT * FROM products')
         .then((response) => response.rows);
 };
 
 //GET PRODUCTS BY CATEGORY
-export const getProductsByCategory = async (category) => {
+exports.getProductsByCategory = async (category) => {
     return await db.query(
         'SELECT * FROM products WHERE category = $1', 
         [category])
@@ -17,7 +17,7 @@ export const getProductsByCategory = async (category) => {
 };
 
 //GET PRODUCT BY ID
-export const getProductsById = async (id) => {
+exports.getProductsById = async (id) => {
     return await db.query(
         'SELECT * FROM products WHERE id = $1', 
         [id])
@@ -25,21 +25,21 @@ export const getProductsById = async (id) => {
 };
 
 //POST NEW PRODUCT
-export const addProduct = async (product) => {
+exports.addProduct = async (product) => {
     return await db.query(
         'INSERT INTO products (name,category,price,num_in_stock) VALUES $1, $2, $3, $4', 
         [product.name,product.category,product.price,product.num_in_stock]);
 };
 
 //PUT UPDATE TO PRODUCT
-export const updateProduct = async (product) => {
+exports.updateProduct = async (product) => {
     return await db.query(
         'UPDATE products SET name = $1, category = $2, price = $3, num_in_stock = $4 WHERE products.id = $5', 
         [product.name,product.category,product.price,product.num_in_stock,product.id]);
 };
 
 //DELETE PRODUCT FROM INVENTORY
-export const deleteProduct = async (productId) => {
+exports.deleteProduct = async (productId) => {
     return await db.query(
         'DELETE FROM products WHERE id = $1', 
         [productId]);

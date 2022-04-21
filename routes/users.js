@@ -1,5 +1,5 @@
-import Router from 'express-promise-router';
-import { getAllUsers, deleteUser, getUser, updateUser } from '../db/users';
+const express = require('express');
+const { getAllUsers, deleteUser, getUser, updateUser } = require('../db/users');
 
 const usersRouter = express.Router();
 
@@ -61,4 +61,4 @@ usersRouter.delete('/:userId', async (req, res) => {
   res.status(204).send();
 });
 
-export default usersRouter;
+module.exports = usersRouter;

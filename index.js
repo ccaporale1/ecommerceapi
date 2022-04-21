@@ -1,4 +1,4 @@
-import createServer from './app.js';
+const createServer = require('./app.js');
 const express = require('express');
 const app = express();
 
@@ -9,3 +9,5 @@ const port = 3000;
 server.listen(port, () => {
   console.log(`server listening on ${port}`);
 });
+
+module.exports = server;

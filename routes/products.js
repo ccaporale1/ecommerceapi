@@ -1,6 +1,6 @@
 //const db = require('../db/index.js');
 const express = require('express');
-import { getAllProducts, getProductsByCategory, getProductById, addProduct, deleteProduct, updateProduct} from '../db/products'
+const { getAllProducts, getProductsByCategory, getProductById, addProduct, deleteProduct, updateProduct} = require('../db/products.js');
 const productsRouter = express.Router();
 
 //GET ALL PRODUCTS INFO
@@ -39,3 +39,5 @@ productsRouter.put('/:id', async (req,res,next) => {
 productsRouter.delete('/:id', (req,res,next) => {
 
 });
+
+module.exports = productsRouter;
