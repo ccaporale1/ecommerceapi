@@ -18,7 +18,7 @@ const pool = new Pool(process.env.NODE_ENV === "production"? config: dev);
 const client = new Client(process.env.NODE_ENV === "production"? config: dev);
 
 module.exports = {
-  query: (text, params, callback) => {
+  query: async (text, params, callback) => {
     const start = Date.now()
     const res = await pool.query(text, params, (err,res) => {
       const duration = Date.now() - start;
@@ -30,7 +30,7 @@ module.exports = {
     return res;
   },
   
-  getClient() {
+  getClient: async () => {
     const client = await pool.connect();
     const query = client.query;
     const release = client.release;
