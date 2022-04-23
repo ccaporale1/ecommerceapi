@@ -1,12 +1,19 @@
 
+const res = require('express/lib/response');
 const pool = require('./index.js');
 
+
+  
 const getAllUsers = async () => {
-    const result = await pool.query(
-        'SELECT * FROM users')
-        .then((response) => response.rows);
-    pool.end();
-    return result;
+
+    await pool.query('SELECT * FROM users;', (err, res) => {
+        if (err) {
+          throw err
+        }
+        return res.rows;
+      })
+
+    
 };
 
 const deleteUser = async (userId) => {
@@ -25,12 +32,25 @@ const getUser = async (userId) => {
 
 const addUser = async (user) => {
     const {username, password, role } = user;
-    console.log(user);
-    const result = await pool.query(
-        'INSERT INTO users (username,password,role) VALUES ($1, $2, $3) RETURNING username;', 
-        [username,password,role]);
-    pool.end();
-    return result;
+    //'INSERT INTO users (username,password,role) VALUES ($1, $2, $3) RETURNING username;', [username,password,role])
+
+    (async () => {
+        // note: we don't try/catch this because if connecting throws an exception
+        // we don't need to dispose of the client (it will be undefined)
+        const client = await pool.connect()
+        try {
+          await client.query('BEGIN');
+          const queryText = 'INSERT INTO users (username,password,role) VALUES ($1, $2, $3) RETURNING username';
+          const res = await client.query(queryText, [username,password,role]);
+          await client.query('COMMIT');
+        } catch (e) {
+          await client.query('ROLLBACK');
+          throw e
+        } finally {
+          client.release();
+          return res;
+        }
+      })().catch(e => console.error(e.stack));
 };
 
 const updateUser = async (user) => {
