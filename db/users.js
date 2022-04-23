@@ -3,7 +3,7 @@ const db = require('./index.js');
 
 exports.getAllUsers = async () => {
     return await db.query(
-        'SELECT * FROM users')
+        'SELECT * FROM users;')
         .then((response) => response.rows);
 };
 
@@ -21,8 +21,8 @@ exports.getUser = async (userId) => {
 
 exports.addUser = async (user) => {
     return await db.query(
-        'INSERT INTO users (username,password) VALUES $1, $2', 
-        [user.username,user.password]);
+        'INSERT INTO users (username,password,role) VALUES $1, $2, $3;', 
+        [user.username,user.password,user.role]);
 };
 
 exports.updateUser = async (user) => {
