@@ -1,6 +1,6 @@
 //apiTest.js
 const request = require('supertest');
-const app = require('../index.js');
+const app = require('../app.js');
 const db = require('../db/index.js');
 
 const agent = request.agent(app);
@@ -14,7 +14,6 @@ describe('POST /users', function () {
             .post('/users')
             .send({ username: "test_username",password: "test_password", role: "A"})
             .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .expect(201, done);
     });
 });
@@ -26,7 +25,7 @@ describe('POST /users', function () {
         request(app)
             .get('/users')
             .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
+            .expect('Content-Type', "application/json/")
             .expect(200, done);
     });
 });

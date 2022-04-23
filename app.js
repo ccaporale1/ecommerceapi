@@ -1,28 +1,31 @@
+//const createServer = require('./app.js');
 const express = require('express');
-const morgan = require('morgan');
 
-//const cartsRouter = require('./routes/carts.js');
-const productsRouter  = require('./routes/products.js');
+const app = express();
+const productsRouter = require('./routes/products.js');
 const usersRouter = require('./routes/users.js');
-//const orderRouter = require('./routes/orders.js');
-
-const createServer = () => {
-  const app = express();
-  const api = express.Router();
-
-  if (process.env.LOGGING === 'true') {
-    app.use(morgan('tiny'));
-  }
-
-  api.use('/products', productsRouter);
-  api.use('/users', usersRouter);
-  //api.use('/carts', cartsRouter);
-  //api.use('/orders', orderRouter);
-
-  app.use(express.json());
-  app.use('/api', api);
-  return app;
-};
+const cartsRouter = require('./routes/carts.js');
+const ordersRouter = require('./routes/orders.js');
 
 
-module.exports = createServer;
+app.get('/', (request, response) => {
+  response.json({ info: 'Node.js, Express, and Postgres API' })
+})
+
+
+if (process.env.LOGGING === 'true') {
+  app.use(morgan('tiny'));
+}
+app.use('/products', productsRouter);
+app.use('/users', usersRouter);
+//app.use('/carts', cartsRouter);
+//app.use('/orders', ordersRouter);
+app.use(express.json());
+
+const port = 3000;
+
+const server = app.listen(3000, () => {
+  console.log(`server listening on ${port}`);
+});
+
+module.exports = server;

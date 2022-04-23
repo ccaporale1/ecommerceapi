@@ -1,40 +1,27 @@
-require('dotenv').config({ path: './db/.env' });
+const {Pool, CLient} = require("pg");
+require('dotenv').config();
 
-const initOptions = {
-  // global event notification;
-  error(error, e) {
-      if (e.cn) {
-          // A connection-related error;
-          //
-          // Connections are reported back with the password hashed,
-          // for safe errors logging, without exposing passwords.
-          console.log('CN:', e.cn);
-          console.log('EVENT:', error.message || error);
-      }
-  }
+const credentials = {
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
 };
-  
-const pgp = require('pg-promise')(initOptions);
-  
-// using an invalid connection string:
-const db = pgp(`postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`);
-  
-db.connect()
-  .then(obj => {
-      // Can check the server version here (pg-promise v10.1.0+):
-      const serverVersion = obj.client.serverVersion;
+console.log(credentials);
+// Connect with a connection pool.
+const connectionString = `postgresql://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}/${credentials.database}`
+console.log(connectionString);
 
-      obj.done(); // success, release the connection;
-  })
-  .catch(error => {
-      console.log('ERROR:', error.message || error);
+const prodConfig = {
+  connectionString: connectionString,
+  ssl: {
+      rejectUnauthorized: false
+    } 
+}
+
+const pool = new Pool({
+  connectionString,
 });
 
-async function testConnection() {
-  const c = await db.connect(); // try to connect
-  c.done(); // success, release connection
-  return c.client.serverVersion; // return server version
-}
-const log = testConnection();
-
-console.log(log);
+module.exports = pool;

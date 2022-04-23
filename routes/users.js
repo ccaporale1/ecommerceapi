@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllUsers, deleteUser, getUser, updateUser } = require('../db/users');
+const db = require('../db/users.js');
 
 const usersRouter = express.Router();
 
@@ -17,30 +17,33 @@ const validateUser = (user) => {
     //error
   }
 }
+
 //GET USER
 usersRouter.get('/:userId', async (req, res, next) => {
-  const user = await getUser(req.params.userId);
+  const user = await db.getUser(req.params.userId);
     
     res.status(200).send(user);
 });
 //GET ALL USERS
 usersRouter.get('/', async (req,res,next) => {
-  const allUsers = await getAllUsers();
+  const allUsers = await db.getAllUsers();
 
   res.status(200).send(allUsers);
 });
 
 //POST NEW USER
-usersRouter.post('/', async (req,res,next) => {
+usersRouter.post('/', async (req,res) => {
   const newUser = req.body;
-
+  
   try {
-    await add(newUser);
+    const resolve = await db.addUser(newUser);
   } catch (error) {
     res.status(400).send(error.message);
     return;
   }
-  res.status(201).send(newUser);
+  res.setHeader("Content-Type", "/json/");
+  const sendUser = json.stringify(newUser);
+  res.status(201).send(sendUser);
 });
 //PUT UPDATE TO USER
 usersRouter.put('/:userId', async (req,res,next) => {
@@ -51,12 +54,12 @@ usersRouter.put('/:userId', async (req,res,next) => {
 
   const userUpdate = {...req.user, ...req.body};
 
-  await updateUser(userUpdate);
+  await db.updateUser(userUpdate);
   res.send(200).send();
 });
 //DELETE USER
 usersRouter.delete('/:userId', async (req, res) => {
-  await deleteUser(req.user.id);
+  await db.deleteUser(req.user.id);
 
   res.status(204).send();
 });
