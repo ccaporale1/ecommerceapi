@@ -28,9 +28,14 @@ const userValidation = (req, res, next) => {
 
 //GET USER
 usersRouter.get('/:userId', async (req, res, next) => {
-  const user = await db.getUser(req.params.userId);
-    
-    res.status(200).send(user);
+
+  try {
+    const returnUser = await db.getUser(req.params.userId);
+  } catch (err) {
+    res.status(400).send(err.message);
+    return;
+  }  
+  res.status(200).send(returnUser);
 });
 //GET ALL USERS
 usersRouter.get('/', async (req,res,next) => {
@@ -50,13 +55,11 @@ usersRouter.post('/', userValidation, async (req,res) => {
   }
   
   res.setHeader("Content-Type", "application/json/");
-  console.log('trying to send response');
   res.status(201).send(newUser);
-  console.log(res);
 });
 
 //PUT UPDATE TO USER
-usersRouter.put('/:userId', async (req,res,next) => {
+usersRouter.put('/:userId', userValidation, async (req,res,next) => {
   if (req.user.id !== req.body.id) {
     res.status(400).send('user id does not match');
     return;
@@ -64,13 +67,25 @@ usersRouter.put('/:userId', async (req,res,next) => {
 
   const userUpdate = {...req.user, ...req.body};
 
-  await db.updateUser(userUpdate);
-  res.send(200).send();
+ 
+  try {
+    await db.updateUser(userUpdate);
+  } catch (err) {
+    res.status(400).send(err.message);
+    return;
+  }
+  
+  res.setHeader("Content-Type", "application/json/");
+  res.status(200).send(userUpdate);
 });
 //DELETE USER
 usersRouter.delete('/:userId', async (req, res) => {
-  await db.deleteUser(req.user.id);
-
+  try {
+    await db.deleteUser(req.user.id);
+  } catch (err) {
+    res.status(400).send(err.message);
+    return;
+  }
   res.status(204).send();
 });
 
