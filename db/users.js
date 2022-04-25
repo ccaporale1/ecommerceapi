@@ -31,26 +31,16 @@ const getUser = async (userId) => {
 };
 
 const addUser = async (user) => {
-    const {username, password, role } = user;
-    //'INSERT INTO users (username,password,role) VALUES ($1, $2, $3) RETURNING username;', [username,password,role])
-
-    (async () => {
-        // note: we don't try/catch this because if connecting throws an exception
-        // we don't need to dispose of the client (it will be undefined)
-        const client = await pool.connect()
-        try {
-          await client.query('BEGIN');
-          const queryText = 'INSERT INTO users (username,password,role) VALUES ($1, $2, $3) RETURNING username';
-          const res = await client.query(queryText, [username,password,role]);
-          await client.query('COMMIT');
-        } catch (e) {
-          await client.query('ROLLBACK');
-          throw e
-        } finally {
-          client.release();
-          return res;
-        }
-      })().catch(e => console.error(e.stack));
+    const { full_name, password, role } = user;
+    console.log(user);
+    await pool.query('INSERT INTO users (full_name,password,role) VALUES ($1, $2, $3) RETURNING full_name,password,role', [full_name,password,role], (error, result) => {
+        if (error) {
+            console.log(error);
+            return error;
+        } else {
+            return result.rows[0];
+        };
+    });
 };
 
 const updateUser = async (user) => {
@@ -58,6 +48,7 @@ const updateUser = async (user) => {
         'UPDATE users SET username=$1, password=$2 WHERE users.id = $3', 
         [user.username,user.password,user.id]);
 };
+
 
 module.exports =
 { getAllUsers, deleteUser, getUser, updateUser, addUser };

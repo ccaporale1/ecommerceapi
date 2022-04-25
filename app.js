@@ -1,5 +1,6 @@
 //const createServer = require('./app.js');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const productsRouter = require('./routes/products.js');
@@ -7,6 +8,11 @@ const usersRouter = require('./routes/users.js');
 const cartsRouter = require('./routes/carts.js');
 const ordersRouter = require('./routes/orders.js');
 
+app.use(express.json());
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })

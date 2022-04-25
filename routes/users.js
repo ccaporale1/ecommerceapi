@@ -1,22 +1,30 @@
 const express = require('express');
 const db = require('../db/users.js');
 
+
 const usersRouter = express.Router();
 
-const validateUser = (user) => {
-  //username
-  if (typeof user.username !== 'string') {
-    //error
+const validate = (user) => {
+  if (typeof user.full_name !== 'string') {
+    return 'username must be a string';
   }
-  //password
   if (typeof user.password !== 'string') {
-    //error
+    return 'password must be a string';
   }
-  //email address
-  if (typeof user.email !== 'string' ) {
-    //error
+
+  return true;
+};
+  
+const userValidation = (req, res, next) => {
+  const valid = validate(req.body);
+
+  if (valid === true) {
+    next();
+  } else {
+    res.status(400).send(valid);
+    return;
   }
-}
+};
 
 //GET USER
 usersRouter.get('/:userId', async (req, res, next) => {
@@ -32,13 +40,21 @@ usersRouter.get('/', async (req,res,next) => {
 });
 
 //POST NEW USER
-usersRouter.post('/', async (req,res) => {
+usersRouter.post('/', userValidation, async (req,res) => {
+  console.log(req.body);
   const newUser = req.body;
-  const sendUser = await db.addUser(newUser);
+  console.log(newUser);
+  try {
+    await db.addUser(newUser);
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send(err.message);
+    return;
+  }
   
   res.setHeader("Content-Type", "application/json/");
   
-  res.status(201).send(sendUser);
+  res.status(201).send(newUser);
 });
 
 //PUT UPDATE TO USER

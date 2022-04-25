@@ -3,18 +3,24 @@ const request = require('supertest');
 const app = require('../app.js');
 const db = require('../db/index.js');
 
-const agent = request.agent(app);
+
 
 
 //==================== user API test ====================
 
-describe('POST /users', function () {
-    it('inserts a user into the database', function(done) {
-        request(app)
-            .post('/users')
-            .send({ username: "test_username",password: "test_password", role: "A"})
-            .set('Accept', 'application/json')
-            .expect(201, done);
+describe('POST /users', async () => {
+    it('creates a new user', async () => {
+        const data = { full_name: "test_username",password: "test_password", role: "A"};
+        const api = await request(app);
+        console.log(data);
+        const { status, body } = await api.post(`/users`).send(data);
+        console.log(status);
+        console.log(body);
+        status.should.equal(201);
+        body.full_name.should.equal(data.full_name);
+        body.password.should.equal(data.password);
+        body.role.should.equal(data.role);
+    
     });
 });
 /**
@@ -29,3 +35,4 @@ describe('POST /users', function () {
             .expect(200, done);
     });
 });
+

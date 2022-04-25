@@ -8,10 +8,9 @@ const credentials = {
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
 };
-console.log(credentials);
+
 // Connect with a connection pool.
-const connectionString = `postgresql://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}/${credentials.database}`
-console.log(connectionString);
+const connectionString = `postgresql://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}/${credentials.database}`;
 
 const prodConfig = {
   connectionString: connectionString,
@@ -23,6 +22,7 @@ const prodConfig = {
 const pool = new Pool({
   connectionString,
 });
+
 
 
 module.exports = pool;
