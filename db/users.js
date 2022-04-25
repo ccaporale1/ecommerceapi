@@ -19,15 +19,27 @@ const getAllUsers = async () => {
 const deleteUser = async (userId) => {
     return await pool.query(
         'DELETE FROM users WHERE id = $1', 
-        [userId]);
+        [userId], (error) => {
+            if (error) {
+                console.log(error);
+                return error;
+            } else {
+                return;
+            };
+        });
 };
 
 const getUser = async (userId) => {
     const result = await pool.query(
         'SELECT * FROM users WHERE id = $1 LIMIT 1', 
-        [userId]);
-    pool.end();
-    return result;
+        [userId], (error, result) => {
+            if (error) {
+                console.log(error);
+                return error;
+            } else {
+                return result.rows[0];
+            };
+        });
 };
 
 const addUser = async (user) => {
@@ -45,7 +57,14 @@ const addUser = async (user) => {
 const updateUser = async (user) => {
     return await pool.query(
         'UPDATE users SET username=$1, password=$2 WHERE users.id = $3', 
-        [user.username,user.password,user.id]);
+        [user.full_name,user.password,user.id], (error, result) => {
+            if (error) {
+                console.log(error);
+                return error;
+            } else {
+                return result.rows[0];
+            };
+        });
 };
 
 
