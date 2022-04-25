@@ -8,19 +8,27 @@ const db = require('../db/index.js');
 
 //==================== user API test ====================
 
-describe('POST /users', async () => {
+describe('POST /users', async (done) => {
     it('creates a new user', async () => {
         const data = { full_name: "test_username",password: "test_password", role: "A"};
-        const api = await request(app);
-        console.log(data);
-        const { status, body } = await api.post(`/users`).send(data);
-        console.log(status);
-        console.log(body);
-        status.should.equal(201);
-        body.full_name.should.equal(data.full_name);
-        body.password.should.equal(data.password);
-        body.role.should.equal(data.role);
-    
+
+        session = request.agent(app);
+
+        session
+            .post(`/users`)
+            .send(data)
+            .expect(201)
+            //.expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.should.be.instanceOf(Array);
+                res.body.should.have.property('_id');
+                user_id = res.body._id;
+                done();
+            })
+        
+        
+        
     });
 });
 /**

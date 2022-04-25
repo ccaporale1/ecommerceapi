@@ -32,7 +32,6 @@ const getUser = async (userId) => {
 
 const addUser = async (user) => {
     const { full_name, password, role } = user;
-    console.log(user);
     await pool.query('INSERT INTO users (full_name,password,role) VALUES ($1, $2, $3) RETURNING full_name,password,role', [full_name,password,role], (error, result) => {
         if (error) {
             console.log(error);

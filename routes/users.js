@@ -41,20 +41,18 @@ usersRouter.get('/', async (req,res,next) => {
 
 //POST NEW USER
 usersRouter.post('/', userValidation, async (req,res) => {
-  console.log(req.body);
   const newUser = req.body;
-  console.log(newUser);
   try {
     await db.addUser(newUser);
   } catch (err) {
-    console.log(err.message);
     res.status(400).send(err.message);
     return;
   }
   
   res.setHeader("Content-Type", "application/json/");
-  
+  console.log('trying to send response');
   res.status(201).send(newUser);
+  console.log(res);
 });
 
 //PUT UPDATE TO USER
