@@ -44,7 +44,7 @@ const getProductsById = async (id) => {
 //POST NEW PRODUCT
 const addProduct = async (product) => {
     return new Promise(function(resolve, reject) {
-        pool.query('INSERT INTO products (name,category,price,num_in_stock) VALUES $1, $2, $3, $4', 
+        pool.query('INSERT INTO products (name,category,price,num_in_stock) VALUES $1, $2, $3, $4 RETURNING name,category,price,num_in_stock', 
         [product.name,product.category,product.price,product.num_in_stock], 
         (error, result) => {
           if (error) {

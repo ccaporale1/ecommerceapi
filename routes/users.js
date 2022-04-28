@@ -1,7 +1,7 @@
 const express = require('express');
 
 const db = require('../db/users.js');
-const pool = require('./index.js');
+
 
 const usersRouter = express.Router();
 

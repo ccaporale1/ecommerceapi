@@ -69,7 +69,7 @@ describe('GET /users', async (done) => {
                 expect(res.body[0].any(Object))
                 expect(res.body[0].full_name.any(String))
                 expect(res.body[0].role.any(String))
-                expect(res.body[0].id.any(Number))
+                expect(res.body[0].id.equals(userId))
                 done();
  
             });

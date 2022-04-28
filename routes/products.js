@@ -1,6 +1,6 @@
 //const db = require('../db/index.js');
 const express = require('express');
-const { getAllProducts, getProductsByCategory, getProductById, addProduct, deleteProduct, updateProduct} = require('../db/products.js');
+const db = require('../db/products.js');
 const productsRouter = express.Router();
 
 //GET ALL PRODUCTS INFO
@@ -26,18 +26,51 @@ productsRouter.get('/:id', async (req,res,next) => {
     res.status(200).send(product);
 });
 //POST NEW PRODUCT
-productsRouter.post('/:id', async (req,res,next) => {
-
+productsRouter.post('/', async (req,res,next) => {
+    const newProduct = req.body;
+    console.log(newProduct);
+    try {
+        await db.addProduct(newProduct);
+    } catch (err) {
+        res.status(400).send(err.message);
+        return;
+    }
+    //res.setHeader("Content-Type", "application/json/");
+    res.status(201).send(newProduct);
 });
 
 //PUT UPDATE TO PRODUCT
 productsRouter.put('/:id', async (req,res,next) => {
+    if (req.product.id !== req.body.id) {
+        res.status(400).send('product id does not match');
+        return;
+    }
+    
+    const productUpdate = {...req.product, ...req.body};
 
+    
+    try {
+    await db.updateProduct(productUpdate);
+    } catch (err) {
+    res.status(400).send(err.message);
+    return;
+    }
+      
+      //res.setHeader("Content-Type", "application/json/");
+      res.status(200).send(productUpdate);
+    
 });
 
 //DELETE PRODUCT FROM INVENTORY
-productsRouter.delete('/:id', (req,res,next) => {
-
+productsRouter.delete('/:id', async (req,res,next) => {
+    try {
+        const productDel = await db.deleteProduct(req.product.id);
+        res.body = productDel;
+      } catch (err) {
+        res.status(400).send(err.message);
+        return;
+      }
+      res.status(204).send();
 });
 
 module.exports = productsRouter;
