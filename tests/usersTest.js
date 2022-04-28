@@ -1,9 +1,9 @@
 //apiTest.js
 const request = require('supertest');
 const app = require('../app.js');
+const expect = require('chai').expect;
 
-console.log('Users Route Tests')
-
+let lastUserId = 0
 //==================== user API test ====================
 
 describe('POST /users', async (done) => {
@@ -19,9 +19,9 @@ describe('POST /users', async (done) => {
             .end(function(err, res) {
                 if (err) return done(err);
                 
-                expect(res.body).toEqual(data);
+                expect(res.body).equal(data);
                 //const userId = res.body.id;
-                expect(res.status).toEqual(201);
+                expect(res.status).equal(201);
                 done();
             })
         
@@ -64,7 +64,7 @@ describe('GET /users', async (done) => {
             .get(`/users/${userId}`)
             .end(function(err, res) {
                 if (err) return done(err);
-                expect(res.status).toEqual(200)
+                expect(res.status).equal(200)
                 //check data
                 expect(res.body[0].any(Object))
                 expect(res.body[0].full_name.any(String))

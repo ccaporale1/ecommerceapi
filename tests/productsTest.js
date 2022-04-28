@@ -1,8 +1,7 @@
 //apiTest.js
 const request = require('supertest');
 const app = require('../app.js');
-
-console.log('Products Route Tests')
+const expect = require('chai').expect;
 
 //==================== product API test ====================
 
@@ -19,9 +18,9 @@ describe('POST /products', async (done) => {
             .end(function(err, res) {
                 if (err) return done(err);
                 
-                expect(res.body).toEqual(data);
+                expect(res.body).equal(data);
                 //const productId = res.body.id;
-                expect(res.status).toEqual(201);
+                expect(res.status).equal(201);
                 done();
             })
         
