@@ -1,46 +1,95 @@
-const { response } = require('express');
-const db = require('./index.js');
+const pool = require('./index.js');
 
 //GET ALL PRODUCTS INFO
-exports.getAllProducts = async () => {
-    return await db.query(
-        'SELECT * FROM products')
-        .then((response) => response.rows);
+const getAllProducts = async () => { 
+    return new Promise(function(resolve, reject) {
+        pool.query('SELECT * FROM products', (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
 };
 
 //GET PRODUCTS BY CATEGORY
-exports.getProductsByCategory = async (category) => {
-    return await db.query(
-        'SELECT * FROM products WHERE category = $1', 
-        [category])
-        .then((response) => response.rows);
+const getProductsByCategory = async (category) => {
+    return new Promise(function(resolve, reject) {
+        pool.query('SELECT * FROM products WHERE category = $1', [category], 
+        (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
 };
 
 //GET PRODUCT BY ID
-exports.getProductsById = async (id) => {
-    return await db.query(
-        'SELECT * FROM products WHERE id = $1', 
-        [id])
-        .then((response) => response.rows);
+const getProductsById = async (id) => {
+    return new Promise(function(resolve, reject) {
+        pool.query('SELECT * FROM products WHERE id = $1', [id], 
+        (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
 };
 
 //POST NEW PRODUCT
-exports.addProduct = async (product) => {
-    return await db.query(
-        'INSERT INTO products (name,category,price,num_in_stock) VALUES $1, $2, $3, $4', 
-        [product.name,product.category,product.price,product.num_in_stock]);
+const addProduct = async (product) => {
+    return new Promise(function(resolve, reject) {
+        pool.query('INSERT INTO products (name,category,price,num_in_stock) VALUES $1, $2, $3, $4', 
+        [product.name,product.category,product.price,product.num_in_stock], 
+        (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
 };
 
 //PUT UPDATE TO PRODUCT
-exports.updateProduct = async (product) => {
-    return await db.query(
-        'UPDATE products SET name = $1, category = $2, price = $3, num_in_stock = $4 WHERE products.id = $5', 
-        [product.name,product.category,product.price,product.num_in_stock,product.id]);
+const updateProduct = async (product) => {
+    return new Promise(function(resolve, reject) {
+        pool.query('UPDATE products SET name = $1, category = $2, price = $3, num_in_stock = $4 WHERE products.id = $5', 
+        [product.name,product.category,product.price,product.num_in_stock,product.id], 
+        (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
 };
 
 //DELETE PRODUCT FROM INVENTORY
-exports.deleteProduct = async (productId) => {
-    return await db.query(
-        'DELETE FROM products WHERE id = $1', 
-        [productId]);
+const deleteProduct = async (productId) => {
+    return new Promise(function(resolve, reject) {
+        pool.query('DELETE FROM products WHERE id = $1', [productId], 
+        (error, result) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(result.rows);
+          };
+        });
+    });
+};
+
+module.exports = {
+    deleteProduct,
+    updateProduct,
+    getAllProducts,
+    getProductsByCategory,
+    getProductsById,
+    addProduct
 };

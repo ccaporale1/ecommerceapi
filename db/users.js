@@ -1,7 +1,5 @@
 const pool = require('./index.js');
 
-
-  
 const getAllUsers = async () => {
 
   return new Promise(function(resolve, reject) {
@@ -67,5 +65,10 @@ const updateUser = async (user) => {
         });
 };
 
-module.exports =
-{ getAllUsers, deleteUser, getUser, updateUser, addUser };
+module.exports = { 
+  getAllUsers, 
+  deleteUser, 
+  getUser, 
+  updateUser, 
+  addUser 
+};
