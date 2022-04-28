@@ -1,56 +1,56 @@
-
-const res = require('express/lib/response');
 const pool = require('./index.js');
 
 
   
 const getAllUsers = async () => {
 
-    await pool.query('SELECT * FROM users;', (err, res) => {
-        if (err) {
-          throw err
-        }
-        return res.rows;
-      })
-
-    
-};
+  return new Promise(function(resolve, reject) {
+    pool.query('SELECT id,full_name,role FROM users', (error, result) => {
+      if (error) {
+          reject(error);
+      } else {
+          resolve(result.rows);
+      };
+    });
+  });
+}
+  
+  const getUser = async (userId) => {
+      
+    return new Promise(function(resolve, reject) {
+      pool.query('SELECT id,full_name,role FROM users WHERE id = $1', [userId], (error, result) => {
+        if (error) {
+            reject(error);
+        } else {
+          resolve(result.rows[0]);
+        };
+      });
+    });
+  }
 
 const deleteUser = async (userId) => {
-    return await pool.query(
-        'DELETE FROM users WHERE id = $1', 
-        [userId], (error) => {
-            if (error) {
-                console.log(error);
-                return error;
-            } else {
-                return;
-            };
-        });
+  return new Promise(function(resolve, reject) {
+    pool.query('DELETE FROM users WHERE id = $1 RETURNING id,full_name,role', [userId], (error, result) => {
+      if (error) {
+          reject(error);
+      } else {
+        resolve(result.rows[0]);
+      };
+    });
+  });
 };
 
-const getUser = async (userId) => {
-    const result = await pool.query(
-        'SELECT * FROM users WHERE id = $1 LIMIT 1', 
-        [userId], (error, result) => {
-            if (error) {
-                console.log(error);
-                return error;
-            } else {
-                return result.rows[0];
-            };
-        });
-};
 
 const addUser = async (user) => {
     const { full_name, password, role } = user;
-    await pool.query('INSERT INTO users (full_name,password,role) VALUES ($1, $2, $3) RETURNING full_name,password,role', [full_name,password,role], (error, result) => {
+    return new Promise(function(resolve, reject) {
+      pool.query('INSERT INTO users (full_name,password,role) VALUES ($1, $2, $3) RETURNING full_name,password,role', [full_name,password,role], (error, result) => {
         if (error) {
-            console.log(error);
-            return error;
+            reject(error);
         } else {
-            return result.rows[0];
+          resolve(result.rows[0]);
         };
+      });
     });
 };
 
@@ -66,7 +66,6 @@ const updateUser = async (user) => {
             };
         });
 };
-
 
 module.exports =
 { getAllUsers, deleteUser, getUser, updateUser, addUser };

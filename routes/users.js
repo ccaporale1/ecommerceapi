@@ -1,8 +1,10 @@
 const express = require('express');
-const db = require('../db/users.js');
 
+const db = require('../db/users.js');
+const pool = require('./index.js');
 
 const usersRouter = express.Router();
+
 
 const validate = (user) => {
   if (typeof user.full_name !== 'string') {
@@ -28,18 +30,21 @@ const userValidation = (req, res, next) => {
 
 //GET USER
 usersRouter.get('/:userId', async (req, res, next) => {
-
   try {
-    const returnUser = await db.getUser(req.params.userId);
+    const user = await db.getUser(req.params.userId);
+    res.body = user;
   } catch (err) {
+
     res.status(400).send(err.message);
     return;
   }  
-  res.status(200).send(returnUser);
+  res.status(200).send();
+
 });
 //GET ALL USERS
 usersRouter.get('/', async (req,res,next) => {
   const allUsers = await db.getAllUsers();
+
   res.setHeader("Content-Type", "application/json/");
   res.status(200).send(allUsers);
 });
@@ -81,7 +86,8 @@ usersRouter.put('/:userId', userValidation, async (req,res,next) => {
 //DELETE USER
 usersRouter.delete('/:userId', async (req, res) => {
   try {
-    await db.deleteUser(req.user.id);
+    const userDel = await db.deleteUser(req.user.id);
+    res.body = userDel;
   } catch (err) {
     res.status(400).send(err.message);
     return;
