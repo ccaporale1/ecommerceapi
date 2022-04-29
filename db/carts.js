@@ -70,4 +70,5 @@ module.exports = {
     addItemToCart,
     updateItemInCart,
     deleteItemInCart,
+    deleteCart
 };
