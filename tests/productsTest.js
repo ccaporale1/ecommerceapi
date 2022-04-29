@@ -17,7 +17,6 @@ describe('POST /products', async (done) => {
             //.expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                console.log(res.body)
                 expect(res.body.name).equal(data.name);
                 expect(res.body.category).equal(data.catergory);
                 expect(res.body.price).equal(data.price);

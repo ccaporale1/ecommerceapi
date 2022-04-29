@@ -24,7 +24,7 @@ if (process.env.LOGGING === 'true') {
 }
 app.use('/products', productsRouter);
 app.use('/users', usersRouter);
-//app.use('/carts', cartsRouter);
+app.use('/carts', cartsRouter);
 //app.use('/orders', ordersRouter);
 app.use(express.json());
 

@@ -28,7 +28,6 @@ productsRouter.get('/:id', async (req,res,next) => {
 //POST NEW PRODUCT
 productsRouter.post('/', async (req,res,next) => {
     const newProduct = req.body;
-    console.log(newProduct);
     try {
         await db.addProduct(newProduct);
     } catch (err) {
