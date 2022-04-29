@@ -22,6 +22,7 @@ ordersRouter.get('/:orderNumber', async (req, res) => {
     
 });
 //POST NEW ORDER
+// this is the "Checkout" endpoint
 ordersRouter.post('/:customerId', async (req,res) => {
     const customer_id = req.params.customerId;
     
